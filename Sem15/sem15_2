@@ -1,0 +1,35 @@
+#Hапишите код, который запускается из командной строки и получает на вход путь до директории на ПК.
+#Соберите информацию о содержимом в виде объектов namedtuple.
+#Каждый объект хранит:
+#* имя файла без расширения или название каталога,
+#* расширение, если это файл,
+#* флаг каталога,
+#* название родительского каталога.
+#В процессе сбора сохраните данные в текстовый файл используя логирование.
+
+
+
+from collections import namedtuple
+import argparse
+import logging
+import os
+
+parser = argparse.ArgumentParser(description='Get false') 
+parser.add_argument('path', metavar='path', type=str, nargs=1, help='path')
+args = parser.parse_args() 
+
+logging.basicConfig(filename='log.log', encoding='utf-8', level=logging.INFO)
+logger = logging.getLogger('log.log')
+
+FALSE = namedtuple('FALSE', 'name_false extension flag_false name_parent_false')
+
+def get_main(false):
+    for root, files, dirs in os.walk(false):
+        for file in files:
+            name_file, ext_file = os.path.splitext(os.path.basename(file))
+            logger.info(f'{FALSE(name_file, ext_file, False, root)}')
+        for dir in dirs:
+            name_dir, = os.path.splitext(os.path.basename(dir))
+            logger.info(f'{FALSE(name_dir, True, root)}')    
+    
+get_main(*args.path)
